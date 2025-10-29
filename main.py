@@ -3,15 +3,12 @@ from umqttsimple import MQTTClient
 import ubinascii
 import machine
 import micropython
-import network
 import esp
 esp.osdebug(None)
 import gc
 gc.collect()
 from payload import device_payload
 import json
-from WIFI_CONFIG import SSID, PASSWORD
-
 
 from esp32 import NVS
 
@@ -105,19 +102,6 @@ led = machine.Pin(8, machine.Pin.OUT)
 last_message = 0
 message_interval = 5
 counter = 0
-
-wlan = network.WLAN()
-wlan.active(False)
-
-wlan.active(True)
-if not wlan.isconnected():
-    print('connecting to network...')
-    wlan.connect(SSID, PASSWORD)
-    while not wlan.isconnected():
-        machine.idle()
-print('network config:', wlan.ipconfig('addr4'))
-
-import test_ota
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
 
