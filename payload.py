@@ -1,48 +1,56 @@
-device_payload = """{
+device_payload = {
   "dev": {
-    "ids": "34f051b880f5",
-    "name": "Blind"
+    "ids": "",
+    "name": ""
   },
   "o": {
-    "name":"Blind 1"
+    "name":""
   },
   "cmps": {
     "sensor1": {
       "p": "binary_sensor",
       "name":"End Stop",
-      "state_topic": "blind/sensor/endstop",
-      "unique_id":"379840e0c951",
+      "state_topic": "",
+      "unique_id":"",
       "payload_on": "ON",
       "payload_off": "OFF"
     },
     "offset1": {
       "p": "number",
-      "unique_id": "eee0e4839d46",
+      "unique_id": "",
       "name":"Offset",
-      "min":"0",
-      "max":"300",
-      "command_topic": "blind/offset/command",
-      "state_topic": "blind/offset/state"
+      "min":"-1000",
+      "max":"1000",
+      "command_topic": "",
+      "state_topic": ""
     },
     "closed1": {
       "p": "number",
-      "unique_id": "d8e28d5bc06a",
+      "unique_id": "",
       "name":"Closed Position",
       "min":"0",
-      "max":"2000",
-      "command_topic": "blind/closed_position/command",
-      "state_topic": "blind/closed_position/state"
+      "max":"5000",
+      "command_topic": "",
+      "state_topic": ""
     },
     "switch1": {
       "p": "cover",
-      "unique_id": "fcc1bd8e30c6",
+      "unique_id": "",
       "name":"Blind",
-      "command_topic": "blind/switch1/set",
-      "state_topic": "blind/switch1",
+      "command_topic": "",
+      "state_topic": "",
       "payload_on": "CLOSE",
       "payload_off": "OPEN",
       "state_on": "CLOSED",
       "state_off": "OPEN"
+    },
+    "button1": {
+      "p": "button",
+      "unique_id": "",
+      "name":"Home",
+      "command_topic": "",
+      "state_topic": "",
+      "payload_press": "HOME"
     }
   }
-}"""
+}
