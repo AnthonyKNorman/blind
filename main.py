@@ -86,8 +86,8 @@ device_payload["cmps"]["button1"]["command_topic"] = home_cmd_topic
 device_payload["cmps"]["strength"]["unique_id"] = uid_str + "af"
 strength_cmd_topic = "blind/" + uid_str + "/strength/cmd"
 strength_state_topic = "blind/" + uid_str + "/strength/state"
-device_payload["cmps"]["strength"]["state_topic"] = strength_state_topic
-device_payload["cmps"]["strength"]["command_topic"] = strength_cmd_topic
+device_payload["cmps"]["offset1"]["state_topic"] = strength_state_topic
+device_payload["cmps"]["offset1"]["command_topic"] = strength_cmd_topic
 
 device_payload_dump = json.dumps(device_payload)
 
@@ -100,7 +100,7 @@ endstop = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
 led = machine.Pin(8, machine.Pin.OUT)
 
 last_message = 0
-message_interval = 5
+message_interval = 10
 counter = 0
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
@@ -288,9 +288,13 @@ while True:
     client.check_msg()
     
     if (time.time() - last_message) > message_interval:
-
-      last_message = time.time()
-      counter += 1
+        strength = wlan.status('rssi')
+      # send the closed position
+        byte_state_topic = bytearray()
+        byte_state_topic.extend(strength_state_topic)
+        client.publish(byte_state_topic, str(strength))
+        last_message = time.time()
+        counter += 1
   except OSError as e:
     print("OS error:", e)
     restart_and_reconnect()
