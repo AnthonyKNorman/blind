@@ -10,6 +10,8 @@ import gc
 gc.collect()
 from payload import device_payload
 import json
+from WIFI_CONFIG import SSID, PASSWORD
+
 
 from esp32 import NVS
 
@@ -38,8 +40,8 @@ last_closed_position = 0
 import motor
 m = motor.HalfStepMotor.frompins(5, 6, 7, 10)
 
-ssid_to_connect = 'FARLEIGH-MESH'
-password_to_connect = 'Julie1801!'
+SSID = 'FARLEIGH-MESH'
+PASSWORD = 'Julie1801!'
 # bssid =
 mqtt_server = '192.168.68.51'
 mqtt_user = 'beantree'
@@ -105,11 +107,12 @@ wlan.active(False)
 wlan.active(True)
 if not wlan.isconnected():
     print('connecting to network...')
-    wlan.connect('FARLEIGH-MESH', 'Julie1801!')
+    wlan.connect(SSID, PASSWORD)
     while not wlan.isconnected():
         machine.idle()
 print('network config:', wlan.ipconfig('addr4'))
 
+import test_ota.py
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
 
