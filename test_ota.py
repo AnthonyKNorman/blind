@@ -1,6 +1,6 @@
 from ota import OTAUpdater
 
-firmware_url = "https://github.com/AnthonyKNorman/chamber-heater/"
+firmware_url = "https://github.com/AnthonyKNorman/blind/"
 
 ota_updater = OTAUpdater(firmware_url, "test.py")
 
