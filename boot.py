@@ -3,7 +3,6 @@
 #esp.osdebug(None)
 #import webrepl
 #webrepl.start()
-# Complete project details at https://RandomNerdTutorials.com/micropython-programming-with-esp32-and-esp8266/
 
 import network
 from WIFI_CONFIG import SSID, PASSWORD
