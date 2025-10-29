@@ -40,9 +40,6 @@ last_closed_position = 0
 import motor
 m = motor.HalfStepMotor.frompins(5, 6, 7, 10)
 
-SSID = 'FARLEIGH-MESH'
-PASSWORD = 'Julie1801!'
-# bssid =
 mqtt_server = '192.168.68.51'
 mqtt_user = 'beantree'
 mqtt_pass = 's2sfilwY'
@@ -112,7 +109,7 @@ if not wlan.isconnected():
         machine.idle()
 print('network config:', wlan.ipconfig('addr4'))
 
-import test_ota.py
+import test_ota
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
 
