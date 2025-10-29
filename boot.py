@@ -5,4 +5,21 @@
 #webrepl.start()
 # Complete project details at https://RandomNerdTutorials.com/micropython-programming-with-esp32-and-esp8266/
 
+import network
+from WIFI_CONFIG import SSID, PASSWORD
+
+wlan = network.WLAN()
+wlan.active(False)
+
+wlan.active(True)
+if not wlan.isconnected():
+    print('connecting to network...')
+    wlan.connect(SSID, PASSWORD)
+    while not wlan.isconnected():
+        pass
+print('network config:', wlan.ipconfig('addr4'))
+
+import test_ota
+
+
 
