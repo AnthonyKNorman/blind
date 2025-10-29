@@ -74,6 +74,7 @@ offset_state_topic = "blind/" + uid_str + "/offset/state"
 device_payload["cmps"]["offset1"]["state_topic"] = offset_state_topic
 device_payload["cmps"]["offset1"]["command_topic"] = offset_cmd_topic
 
+
 # endstop
 device_payload["cmps"]["sensor1"]["unique_id"] = uid_str + "ad"
 endstop_state_topic = "blind/" + uid_str + "/endstop/state"
@@ -83,6 +84,13 @@ device_payload["cmps"]["sensor1"]["state_topic"] = endstop_state_topic
 device_payload["cmps"]["button1"]["unique_id"] = uid_str + "ae"
 home_cmd_topic = "blind/" + uid_str + "/home/cmd"
 device_payload["cmps"]["button1"]["command_topic"] = home_cmd_topic
+
+# wifi signal strength
+device_payload["cmps"]["strength"]["unique_id"] = uid_str + "af"
+strength_cmd_topic = "blind/" + uid_str + "/strength/cmd"
+strength_state_topic = "blind/" + uid_str + "/strength/state"
+device_payload["cmps"]["offset1"]["state_topic"] = strength_state_topic
+device_payload["cmps"]["offset1"]["command_topic"] = strength_cmd_topic
 
 device_payload_dump = json.dumps(device_payload)
 

@@ -33,6 +33,15 @@ device_payload = {
       "command_topic": "",
       "state_topic": ""
     },
+    "strength": {
+      "p": "number",
+      "unique_id": "",
+      "name":"WiFi Signal Strength",
+      "min":"-100",
+      "max":"5000",
+      "command_topic": "",
+      "state_topic": ""
+    },
     "switch1": {
       "p": "cover",
       "unique_id": "",
