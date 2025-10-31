@@ -9,6 +9,7 @@ import gc
 gc.collect()
 from payload import device_payload
 import json
+import os
 
 from esp32 import NVS
 
@@ -77,7 +78,7 @@ device_payload["cmps"]["sensor1"]["unique_id"] = uid_str + "ad"
 endstop_state_topic = "blind/" + uid_str + "/endstop/state"
 device_payload["cmps"]["sensor1"]["state_topic"] = endstop_state_topic
 
-# endstop
+# home
 device_payload["cmps"]["button1"]["unique_id"] = uid_str + "ae"
 home_cmd_topic = "blind/" + uid_str + "/home/cmd"
 device_payload["cmps"]["button1"]["command_topic"] = home_cmd_topic
@@ -88,6 +89,18 @@ strength_cmd_topic = "blind/" + uid_str + "/strength/cmd"
 strength_state_topic = "blind/" + uid_str + "/strength/state"
 device_payload["cmps"]["strength"]["state_topic"] = strength_state_topic
 device_payload["cmps"]["strength"]["command_topic"] = strength_cmd_topic
+
+# OTA Version
+device_payload["cmps"]["version"]["unique_id"] = uid_str + "ag"
+version_cmd_topic = "blind/" + uid_str + "/version/cmd"
+version_state_topic = "blind/" + uid_str + "/version/state"
+device_payload["cmps"]["version"]["state_topic"] = version_state_topic
+device_payload["cmps"]["version"]["command_topic"] = version_cmd_topic
+
+# reset
+device_payload["cmps"]["reset"]["unique_id"] = uid_str + "ah"
+reset_cmd_topic = "blind/" + uid_str + "/reset/cmd"
+device_payload["cmps"]["reset"]["command_topic"] = reset_cmd_topic
 
 device_payload_dump = json.dumps(device_payload)
 
@@ -154,6 +167,13 @@ def sub_cb(topic, msg):
     blind_cmd = 'HOME'
     last_blind_cmd = ''
     
+  # capture RESET command
+  byte_topic = bytearray()
+  byte_topic.extend(reset_cmd_topic)
+    
+  if topic == byte_topic:
+    print('reset command received')
+    restart_and_reconnect()
         
 def connect_and_subscribe():
   global client_id, mqtt_server, topic_sub
@@ -262,6 +282,16 @@ except OSError as e:
   
 client.publish(device_topic, device_payload_dump)
 
+# Send the latest software version
+# get the current version (stored in version.json)
+if 'version.json' in os.listdir():    
+    with open('version.json') as f:
+        current_version = int(json.load(f)['version'])
+    print(f"Current device firmware version is '{current_version}'")
+byte_state_topic = bytearray()
+byte_state_topic.extend(version_state_topic)
+client.publish(byte_state_topic, str(current_version))
+
 led.value(endstop.value())
 last_endstop_state = not endstop.value()
 
@@ -338,3 +368,4 @@ while True:
     byte_state_topic.extend(closed_state_topic)
     client.publish(byte_state_topic, str(closed_position))
     
+

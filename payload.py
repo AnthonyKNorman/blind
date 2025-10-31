@@ -42,6 +42,14 @@ device_payload = {
       "command_topic": "",
       "state_topic": ""
     },
+    "version": {
+      "p": "number",
+      "unique_id": "",
+      "name":"OTA Version Number",
+      "min":"0",
+      "command_topic": "",
+      "state_topic": ""
+    },
     "switch1": {
       "p": "cover",
       "unique_id": "",
@@ -58,8 +66,15 @@ device_payload = {
       "unique_id": "",
       "name":"Home",
       "command_topic": "",
-      "state_topic": "",
       "payload_press": "HOME"
+    },
+    "reset": {
+      "p": "button",
+      "unique_id": "",
+      "name":"Reset",
+      "command_topic": "",
+      "payload_press": "RESET"
     }
   }
 }
+
