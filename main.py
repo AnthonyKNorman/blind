@@ -176,7 +176,11 @@ def home_blind():
     print("Homing the blind")
     
     if endstop.value() == 0:         # endstop already active
-        m.step(400)                  # move away
+        
+        while endstop.value() == 1:  # move away until the endstop is not active
+            m.step(1)
+            
+        m.step(200)                  # move away a bit more
         time.sleep(2)                # wait 2 seconds
     
     # move backwards until we hit the endstop
