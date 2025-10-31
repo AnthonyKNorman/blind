@@ -36,7 +36,7 @@ class OTAUpdater:
         """ Fetch the latest code from the repo, returns False if not found."""
         
         # Fetch the latest code from the repo.
-        response = urequests.get(self.firmware_url)
+        response = urequests.get(self.firmware_url, headers={'Cache-Control': 'no-cache'})
         if response.status_code == 200:
             print(f'Fetched latest firmware code, status: {response.status_code}, -  {response.text}')
     
