@@ -34,20 +34,17 @@ device_payload = {
       "state_topic": ""
     },
     "strength": {
-      "p": "number",
+      "p": "sensor",
       "unique_id": "",
       "name":"WiFi Signal Strength",
-      "min":"-100",
-      "max":"5000",
-      "command_topic": "",
+      "device_class": "power",
       "state_topic": ""
     },
     "version": {
-      "p": "number",
+      "p": "sensor",
       "unique_id": "",
       "name":"OTA Version Number",
-      "min":"0",
-      "command_topic": "",
+      "device_class": "power",
       "state_topic": ""
     },
     "switch1": {

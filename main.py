@@ -42,11 +42,6 @@ mqtt_server = '192.168.68.51'
 mqtt_user = 'beantree'
 mqtt_pass = 's2sfilwY'
 
-#EXAMPLE IP ADDRESS
-#mqtt_server = '192.168.1.144'
-client_id = ubinascii.hexlify(machine.unique_id())
-uid_str = ubinascii.hexlify(machine.unique_id()).decode()
-
 device_payload["dev"]["name"] = "Blind " + uid_str
 device_payload["o"]["name"] = "Blind " + uid_str
 device_payload["dev"]["ids"] = uid_str
@@ -85,17 +80,13 @@ device_payload["cmps"]["button1"]["command_topic"] = home_cmd_topic
 
 # wifi signal strength
 device_payload["cmps"]["strength"]["unique_id"] = uid_str + "af"
-strength_cmd_topic = "blind/" + uid_str + "/strength/cmd"
 strength_state_topic = "blind/" + uid_str + "/strength/state"
 device_payload["cmps"]["strength"]["state_topic"] = strength_state_topic
-device_payload["cmps"]["strength"]["command_topic"] = strength_cmd_topic
 
 # OTA Version
 device_payload["cmps"]["version"]["unique_id"] = uid_str + "ag"
-version_cmd_topic = "blind/" + uid_str + "/version/cmd"
 version_state_topic = "blind/" + uid_str + "/version/state"
 device_payload["cmps"]["version"]["state_topic"] = version_state_topic
-device_payload["cmps"]["version"]["command_topic"] = version_cmd_topic
 
 # reset
 device_payload["cmps"]["reset"]["unique_id"] = uid_str + "ah"
@@ -106,14 +97,14 @@ device_payload_dump = json.dumps(device_payload)
 
 print(device_payload_dump)
 
-topic_sub = b'blind/#'
+topic_sub = b'blind/' + uid_str + '/#'
 topic_pub = b'hello'
 
 endstop = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
 led = machine.Pin(8, machine.Pin.OUT)
 
 last_message = 0
-message_interval = 10
+message_interval = 30
 counter = 0
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
@@ -269,6 +260,13 @@ def update_endstop_state():
     byte_state_topic = bytearray()
     byte_state_topic.extend(endstop_state_topic)
     client.publish(byte_state_topic, msg)
+    
+def publish_wifi_strength():
+    strength = wlan.status('rssi')
+    # send the wifi strength position
+    byte_state_topic = bytearray()
+    byte_state_topic.extend(strength_state_topic)
+    client.publish(byte_state_topic, str(strength))
 
     
 #**************************************
@@ -295,11 +293,6 @@ client.publish(byte_state_topic, str(current_version))
 led.value(endstop.value())
 last_endstop_state = not endstop.value()
 
-# home the blind and set the flags
-blind_cmd = 'OPEN'
-last_blind_cmd = 'OPEN'
-home_blind()
-
 # send the offset state
 byte_state_topic = bytearray()
 byte_state_topic.extend(offset_state_topic)
@@ -313,6 +306,14 @@ client.publish(byte_state_topic, str(closed_position))
 # update the endstop state
 update_endstop_state()
 
+publish_wifi_strength()
+
+
+# home the blind and set the flags
+blind_cmd = 'OPEN'
+last_blind_cmd = 'OPEN'
+home_blind()
+
 #**************************************
 #    Loop
 #**************************************
@@ -320,19 +321,15 @@ update_endstop_state()
 while True:
   try:
     client.check_msg()
-    
-    if (time.time() - last_message) > message_interval:
-        strength = wlan.status('rssi')
-      # send the closed position
-        byte_state_topic = bytearray()
-        byte_state_topic.extend(strength_state_topic)
-        client.publish(byte_state_topic, str(strength))
-        last_message = time.time()
-        counter += 1
   except OSError as e:
     print("OS error:", e)
     restart_and_reconnect()
     
+  if (time.time() - last_message) > message_interval:
+    publish_wifi_strength()
+        
+    last_message = time.time()
+    counter += 1    
     
   if endstop.value() != last_endstop_state:
     last_endstop_state = endstop.value()
