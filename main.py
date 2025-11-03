@@ -104,7 +104,7 @@ endstop = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
 led = machine.Pin(8, machine.Pin.OUT)
 
 
-flash the led to show we got this far
+# flash the led to show we got this far
 for i in range(5):
     led.value(not led.value())
     time.sleep_ms(500)
