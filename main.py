@@ -105,12 +105,12 @@ led = machine.Pin(8, machine.Pin.OUT)
 
 
 # flash the led to show we got this far
-for i in range(5):
+for i in range(10):
     led.value(not led.value())
     time.sleep_ms(500)
 
 last_message = 0
-message_interval = 30
+message_interval = 300    # five minutes
 counter = 0
 
 device_topic = "homeassistant/device/" + uid_str + "/config"
@@ -332,7 +332,10 @@ while True:
     restart_and_reconnect()
     
   if (time.time() - last_message) > message_interval:
+    # send the wifi strength  
     publish_wifi_strength()
+    # send the device topic to ensure continuity
+    client.publish(device_topic, device_payload_dump)
         
     last_message = time.time()
     counter += 1    
