@@ -296,6 +296,11 @@ byte_state_topic = bytearray()
 byte_state_topic.extend(version_state_topic)
 client.publish(byte_state_topic, str(current_version))
 
+# flash the led five times to show connection
+for i in range (10):
+    led.value(not led.value())
+    time.sleep_ms(500)
+
 led.value(endstop.value())
 last_endstop_state = not endstop.value()
 
