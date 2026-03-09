@@ -1,7 +1,7 @@
 import time
 from umqttsimple import MQTTClient
 import ubinascii
-import machine
+import machine, neopixel
 import micropython
 import esp
 esp.osdebug(None)
@@ -101,13 +101,10 @@ topic_sub = b'blind/' + uid_str + '/#'
 topic_pub = b'hello'
 
 endstop = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
-led = machine.Pin(8, machine.Pin.OUT)
-
-
-# flash the led to show we got this far
-for i in range(10):
-    led.value(not led.value())
-    time.sleep_ms(500)
+# led = machine.Pin(8, machine.Pin.OUT)
+n = 1
+p = 8
+np = neopixel.NeoPixel(machine.Pin(p), n)
 
 last_message = 0
 message_interval = 300    # five minutes
@@ -193,10 +190,13 @@ def home_blind():
     print("Homing the blind")
     
     if endstop.value() == 0:         # endstop already active
+        led_on()
         
-        while endstop.value() == 1:  # move away until the endstop is not active
+        while endstop.value() == 0:  # move away until the endstop is not active
             m.step(1)
-            
+        led_off()
+        
+        m.zero()                     # set the zero position
         m.step(200)                  # move away a bit more
         time.sleep(2)                # wait 2 seconds
     
@@ -204,6 +204,11 @@ def home_blind():
     while endstop.value() == 1 and blind_cmd != 'STOP':
         m.step(-1)
         client.check_msg()
+        
+    if endstop.value():
+        led_off()
+    else:
+        led_on()
         
     time.sleep(2)                    # wait 2 seconds
     
@@ -256,11 +261,13 @@ def close_blind():
     
 def update_endstop_state():
     print("endstop state",endstop.value())
-    led.value(endstop.value())
-    if endstop.value() == 1:
-      msg = 'OFF'
+    if endstop.value():
+        led_off()
+        msg = 'OFF'
+        
     else:
-      msg = 'ON'
+        led_on()
+        msg = 'ON'
       
     print("about to publish endstop state")
     byte_state_topic = bytearray()
@@ -273,11 +280,33 @@ def publish_wifi_strength():
     byte_state_topic = bytearray()
     byte_state_topic.extend(strength_state_topic)
     client.publish(byte_state_topic, str(strength))
+    
+#**************************************
+#   LED Management
+#**************************************    
+
+def led_off():
+    global np
+    np[0] = (255,0,0)	#red
+    np.write()
+
+def led_on():
+    global np
+    np[0] = (0,255,0)	#green
+    np.write()
+        
 
     
 #**************************************
 #    Setup
-#**************************************    
+#**************************************
+
+# flash the led to show we got this far
+for i in range(5):
+    led_on()
+    time.sleep_ms(500)
+    led_off()
+    time.sleep_ms(500)
 
 try:
   client = connect_and_subscribe()
@@ -298,10 +327,16 @@ client.publish(byte_state_topic, str(current_version))
 
 # flash the led five times to show connection
 for i in range (10):
-    led.value(not led.value())
+    led_on()
+    time.sleep_ms(500)
+    led_off()
     time.sleep_ms(500)
 
-led.value(endstop.value())
+if endstop.value():
+    led_on()
+else:
+    led_off()
+    
 last_endstop_state = not endstop.value()
 
 # send the offset state
