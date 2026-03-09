@@ -196,8 +196,7 @@ def home_blind():
             m.step(1)
         led_off()
         
-        m.zero()                     # set the zero position
-        m.step(200)                  # move away a bit more
+        m.step(600)                  # move away a bit more
         time.sleep(2)                # wait 2 seconds
     
     # move backwards until we hit the endstop
@@ -287,7 +286,7 @@ def publish_wifi_strength():
 
 def led_off():
     global np
-    np[0] = (255,0,0)	#red
+    np[0] = (0,0,255)	#red
     np.write()
 
 def led_on():
