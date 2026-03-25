@@ -1,0 +1,7 @@
+SSID = "FARLEIGH-MESH"
+PASSWORD = "Julie1801!"
+MQTT_SERVER = "192.168.68.51"
+MQTT_USER = "beantree"
+MQTT_PASS = "s2sfilwY"
+
+
